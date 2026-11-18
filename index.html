@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nstp Proposal</title>
+<style>
+  :root { --bg:#FFF0F5; --pink:#F4A6C0; --strip:#F8C8DC; --deep:#C2185B; --txt:#5A2A3C; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; background:var(--bg); color:var(--txt); }
+  body { font-family: Georgia, "Times New Roman", serif; display:flex; justify-content:center; padding:20px 14px 40px; }
+  .card { width:100%; max-width:460px; border:1.5px solid var(--pink); border-radius:18px; padding:26px 22px 30px; }
+  .strip { width:210px; margin:0 auto 22px; background:var(--strip); border-radius:6px; padding:10px 17px; display:flex; flex-direction:column; gap:10px; }
+  .strip img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:16px; display:block; }
+  .head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+  h1 { margin:0; font-size:26px; font-style:italic; color:var(--deep); }
+  #music { width:44px; height:44px; flex:none; border:0; border-radius:50%; background:#F06292; box-shadow:0 2px 8px rgba(240,98,146,.45); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; -webkit-tap-highlight-color:transparent; }
+  #music svg { width:22px; height:22px; fill:#fff; }
+  #music .pause { display:none; }
+  #music.on .note { display:none; }
+  #music.on .pause { display:block; }
+  #music.on { animation:pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(240,98,146,.55); } 50% { box-shadow:0 0 0 9px rgba(240,98,146,0); } }
+  p { font-size:16px; line-height:1.6; margin:0 0 12px; text-align:left; }
+  #yt { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; left:-10px; top:-10px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="strip">
+    <img src="p1.png" alt="">
+    <img src="p2.png" alt="">
+  </div>
+  <div class="head">
+    <h1>For my bae,</h1>
+    <button id="music" type="button" aria-label="Play our song">
+      <svg class="note" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V6.2l10-2v11.3a3 3 0 1 1-2-2.8V7.8l-6 1.2v8.5a3 3 0 1 1-2-2.8z"/></svg>
+      <svg class="pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+    </button>
+  </div>
+  <p>Hello bae, I’m writing this to you ‘cause I don’t think I can tell it to you in person. First of all, I want to thank you so much for always showing up for me. Kapag inaaya kita, palagi mo akong sinasamahan and palagi mo akong pinaghahandaan. Nag-aayos ka ng matagal, nagme-makeup, at dahil doon mas nafi-feel ko na important ako sa’yo. You always make my rest day amazing. I hope every gala natin nag-eenjoy ka, then mas lalo pa nating makilala ang isa’t isa, hehe.</p>
+  <p>Ayon bae, I just want to say na sobrang na-appreciate kita. Sorry kung hindi ko man masabi in person, huhu. I can assure you, bebe, that I will never stop showing efforts na hindi lang ako sa una magaling. Sabi nga nila, actions speak louder than words, di ba? I promise that I’ll never stop trying to become a better person for you, or to be a better man.</p>
+  <p>I’ll do my best to learn you. What I mean by this is mas makabisado pa kita. Medyo marami na akong nalalaman na fav mo eh, HAHAHA, pero lets say na marami pa akong gustong malaman about you and to love every version of yourself, my baby Yuki. Tsaka dapat kada date natin, I hope you know na okay lang maubos laman ng wallet ko. Ang importante naman is nabili ko yung gusto mo, especially mga bagay na nagpapasaya sa’yo, and memories din nating dalawa yon.</p>
+  <p>God knows how much I love you po, and thank you so much again for the chance na ligawan ka. Hindi ko sasayangin ito. Ikaw lang po, bae, I can promise you that. I’m sorry kung medyo mabilis ko man masabi ito, hindi rin ako nagbibitaw ng word na hindi ako sure, but there’s one thing that I’m sure of right now: I can feel that I’m in love with you already. I LOVE YOU, bae.</p>
+  <p>More dates to come sa atin, and marami pa tayong pupuntahan na lugar na hindi pa natin napupuntahan. Mwaaa</p>
+</div>
+<div id="yt"></div>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+  var VIDEO = 'g3577JpVLZw';
+  var btn = document.getElementById('music');
+  function setOn(on) { btn.classList.toggle('on', on); }
+  
+
+  // Primary: song3.mp3 (o song.mp3) sa same folder. Fallback: YouTube.
+  var FILES = ['song3.mp3', 'song.mp3'], fi = 0;
+  var audio = new Audio(FILES[0]);
+  audio.loop = true; audio.preload = 'auto';
+  var useYT = false;
+  audio.addEventListener('error', function () {
+    fi++;
+    if (fi < FILES.length) { audio.src = FILES[fi]; audio.load(); } else { useYT = true; }
+  });
+  audio.addEventListener('play',  function () { setOn(true); });
+  audio.addEventListener('pause', function () { setOn(false); });
+
+  var player, ytReady = false, ytPlaying = false;
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('yt', {
+      videoId: VIDEO,
+      playerVars: { playsinline: 1, loop: 1, playlist: VIDEO, controls: 0 },
+      events: {
+        onReady: function () { ytReady = true; },
+        onStateChange: function (e) {
+          ytPlaying = (e.data === YT.PlayerState.PLAYING);
+          setOn(ytPlaying);
+        }
+      }
+    });
+  }
+  function toggleYT() {
+    if (!ytReady) { window.open('https://www.youtube.com/watch?v=' + VIDEO, '_blank'); return; }
+    ytPlaying ? player.pauseVideo() : player.playVideo();
+  }
+  btn.addEventListener('click', function () {
+    if (useYT) { toggleYT(); return; }
+    if (!audio.paused) { audio.pause(); return; }
+    audio.play().catch(function () { useYT = true; toggleYT(); });
+  });
+</script>
+</body>
+</html>
